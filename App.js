@@ -19,6 +19,12 @@ import { Transactions } from './components/Transactions'
 
 type Props = {};
 
+const currentYear = new Date().getFullYear();
+const currentMonth = new Date().getMonth() + 1;
+const currentDay = new Date().getDate();
+const creditCardDueDate = 7;
+const budget = 1500;
+
 export default class App extends Component<Props> {
   constructor(props) {
     super(props);
@@ -91,14 +97,22 @@ export default class App extends Component<Props> {
         value: getTransactionValue(sms.body)
       };
     };
-    
-    const parseMessage = function(sms) {
+
+    const parseMessage = (sms) => {
       if (!sms.body) return false;
       if (!sms.body.match(/Compra aprovada no seu ICONTA MULT MC INTER final 9148/g) && !sms.body.match(/ITAU DEBITO:/g)) return false;
       
       const op = getTransactionType(sms.body);
       if (!op) return false;
-      
+
+      const dateFrame = (t) => {
+        if (currentDay >= creditCardDueDate) {
+          return (t.getMonth() === currentMonth && t.getDate() >= 7) 
+        } else {
+          return t.getMonth() === currentMonth || (t.getMonth() === currentMonth-1 && t.getDate() >= 7)  
+        }
+      };
+
       return {
         id: sms._id.toString(),
         card_number: getCreditCardNumber(sms.body), 
@@ -106,7 +120,8 @@ export default class App extends Component<Props> {
         date: getMessageTime(sms), 
         place: getTransactionPlace(sms.body), 
         message: sms.body,
-        op: op
+        op: op,
+        currentBill: dateFrame(getMessageTime(sms))
       };
     }
 
@@ -118,19 +133,37 @@ export default class App extends Component<Props> {
         const transactions = sms.map( i => parseMessage(i) ).filter( m => !!m );
         this.setState({sms: sms, transactions: transactions});
 
-        const currentMonth = new Date().getMonth() + 1;
         const currentMonthSpending = transactions
-        .filter( t => t.date.getMonth() === currentMonth )
+        .filter( t => t.currentBill )
         .map( t => t.value )
-        .reduce((p, c) => { return p + c}, 0);
+        .reduce((p, c) => { return p + c}, 0)
+        .toFixed(2);
  
         this.setState({currentMonthSpending: currentMonthSpending});
-        // this.setState({ currentMonthSpending: new Date().getMonth() + 1 });
       }
     );
   }
   
   render() {
+    const daysLeft = () => {
+      const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
+  
+      if (currentDay === creditCardDueDate) return daysInMonth;
+      if (currentDay > creditCardDueDate) return daysInMonth - currentDay + creditCardDueDate;
+      if (currentDay < creditCardDueDate) return creditCardDueDate - currentDay;
+      return 0;
+    };
+
+    const valueAvaliable = (budget - this.state.currentMonthSpending).toFixed(2);
+    const valueAvaliablePerDay = (valueAvaliable / daysLeft()).toFixed(2);
+    const daySpending = this.state.transactions
+    .filter( t => t.currentBill && t.date.getDate() === currentDay )
+    .map( t => t.value )
+    .reduce((p, c) => { return p + c}, 0)
+    .toFixed(2);
+    const avaliableToday = (valueAvaliablePerDay - daySpending).toFixed(2);
+
+
     return (
       <View style={styles.container}>
         <Text style={styles.welcome}>
@@ -140,7 +173,12 @@ export default class App extends Component<Props> {
           Make all money!!1!
         </Text>
         { this.state.currentMonthSpending && <Text>Gastos do mês: {this.state.currentMonthSpending}</Text> }
-        <Transactions transactions={this.state.transactions} />
+        <Text>Dias restante para fechamento: {daysLeft()}</Text>
+        <Text>Valor disponível: {!!valueAvaliable && valueAvaliable}</Text>
+        <Text>Valor disponível por dia: {!!valueAvaliablePerDay && valueAvaliablePerDay}</Text>
+        <Text>Valor disponível hoje: {!!valueAvaliablePerDay && avaliableToday}</Text>
+        <Text>Gastos do dia: {!!daySpending && daySpending}</Text>
+        <Transactions transactions={this.state.transactions} style={styles.transactions} />
       </View>
     );
   }
@@ -163,4 +201,7 @@ const styles = StyleSheet.create({
     color: '#333333',
     marginBottom: 5,
   },
+  transactions: {
+    paddingTop: 15
+  }
 });
