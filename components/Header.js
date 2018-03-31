@@ -20,15 +20,15 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch'
     // width: 100;
   },
-  background: { 
-    width: undefined, 
+  background: {
+    width: undefined,
     height: 120,
   },
   text: {
     fontFamily: 'Roboto',
-    fontSize: 25,
+    fontSize: 35,
     textAlign: 'center',
-    marginTop: 50,
+    marginTop: 20,
     color: '#FFF',
     fontWeight: 'bold'
   },

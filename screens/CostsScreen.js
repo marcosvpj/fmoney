@@ -74,7 +74,9 @@ export class CostsScreen extends React.Component {
     return (
       <Screen style={styles.screen}>
         <Header text={'Gastos do Fixos'} />
-
+        <View style={styles.total}>
+          <Card text={'Total'} value={total} height={58} />
+        </View>
         <Modal
           transparent={true}
           visible={this.state.showAddCost}
@@ -147,5 +149,11 @@ const styles = StyleSheet.create({
   },
   screen: {flex:1, flexDirection: 'column'},
   modalBody: {backgroundColor: $clear_background, margin: 30, padding: 5, borderRadius: 5},
-  spacing: {paddingTop: 5}
+  spacing: {padding: 5},
+  total: {
+    // position: 'relative',
+    // top: -50
+    position: 'absolute',
+    top: 85
+  }
 });
