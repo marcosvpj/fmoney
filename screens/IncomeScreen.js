@@ -12,24 +12,24 @@ import { $border, $clear_background } from '../styles/colors.js';
 
 const DOUBLE_PRESS_DELAY = 300;
 
-export class CostsScreen extends React.Component {
+export class IncomeScreen extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      showAddCost: false,
-      addCost: {
+      showAddIncome: false,
+      addIncome: {
         name: '',
         value: ''
       }
     };
   }
 
-  onPressCostCard(cost, index) {
+  onPressIncomeCard(income, index) {
     const now = new Date().getTime();
     if (this.lastCardPress && (now - this.lastCardPress) < DOUBLE_PRESS_DELAY) {
       delete this.lastCardPress;
-      this.handleCardDoublePress(cost, index);
+      this.handleCardDoublePress(income, index);
     }
     else {
       this.lastCardPress = now;
@@ -40,64 +40,60 @@ export class CostsScreen extends React.Component {
     this.props.screenProps.handleRemoveCost(cost, index);
   }
 
-  onPressAddCost() {
-    this.setState({showAddCost: true});
+  onPressAddIncome() {
+    this.setState({showAddIncome: true});
   }
 
-  addCost() {
-    this.setState({showAddCost: false});
-    this.props.screenProps.handleAddCost(this.state.addCost);
-  }
-
-  showModalAddCosts(show) {
-    this.setState({showAddCost: show});
+  addIncome() {
+    this.setState({showAddIncome: false});
+    this.props.screenProps.handleAddIncome(this.state.addIncome);
   }
 
   render() {
-    const total = this.props.screenProps.monthlyExpenses
+    const total = this.props.screenProps.monthlyIncomes
       .map(c => c.value)
       .reduce((p, c) => { return p + c }, 0)
       .toFixed(2);
 
     return (
       <Screen style={styles.screen}>
-        <Header text={'Dívidas'} />
+        <Header text={'A Receber'} />
         <View style={styles.total}>
           <Card text={'Total'} value={total} height={58} />
         </View>
         <Modal
           transparent={true}
-          visible={this.state.showAddCost}
-          onRequestClose={() => { this.setState({showAddCost: false}); }}
+          visible={this.state.showAddIncome}
+          onRequestClose={() => { this.setState({showAddIncome: false}); }}
         >
           <View style={styles.modalBody}>
             <View>
               <View style={styles.section}>
                 <Input
                   label={'Nome'}
-                  value={this.state.addCost.name}
+                  value={this.state.addIncome.name}
                   onChangeText={name => this.setState(
-                    prevState => ({addCost: {...prevState.addCost, name: name}})
+                    prevState => ({addIncome: {...prevState.addIncome, name: name}})
                   )}
                 />
               </View>
               <View style={styles.section}>
                 <Input
                   label={'Valor'}
-                  value={this.state.addCost.value}
+                  value={this.state.addIncome.value}
                   keyboardType={'numeric'}
                   onChangeText={value => this.setState(
-                    prevState => ({addCost: {...prevState.addCost, value: value}})
+                    prevState => ({addIncome: {...prevState.addIncome, value: value}})
                   )}
                 />
               </View>
               <View style={styles.section}>
-                <Button onPress={() => { this.setState({showAddCost: false}); }}>
+                <Button onPress={() => { this.setState({showAddIncome: false}); }}>
                   Cancelar
                 </Button>
               </View>
               <View style={styles.section}>
-                <Button onPress={() => { this.addCost() }}>
+                <Button onPress={() => { this.addIncome() }}>
                   Adicionar
                 </Button>
               </View>
@@ -107,10 +103,10 @@ export class CostsScreen extends React.Component {
 
         <ScrollView style={styles.spacing}>
           <View style={styles.costsList}>
-            {this.props.screenProps.monthlyExpenses.map((c, i) => (
-              <Card key={i} text={c.name} value={c.value} onPress={() => this.onPressCostCard(c, i) } />
+            {this.props.screenProps.monthlyIncomes.map((c, i) => (
+              <Card key={i} text={c.name} value={c.value} onPress={() => this.onPressIncomeCard(c, i) } />
             ))}
-            <Card text={'Adicionar'} value={'+'} onPress={() => this.onPressAddCost() } />
+            <Card text={'Adicionar'} value={'+'} onPress={() => this.onPressAddIncome() } />
           </View>
         </ScrollView>
       </Screen>

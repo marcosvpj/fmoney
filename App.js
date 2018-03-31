@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { TransactionsScreen } from './screens/TransactionsScreen';
 import { SummaryScreen } from './screens/SummaryScreen';
 import { CostsScreen } from './screens/CostsScreen';
+import { IncomeScreen } from './screens/IncomeScreen';
 
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import { StatusBar } from 'react-native';
@@ -23,8 +24,9 @@ const monthlyExpenses = [
 
 const Nav = TabNavigator({
   'Resumo': { screen: SummaryScreen },
-  'Gastos': { screen: CostsScreen },
-  'Transações': { screen: TransactionsScreen }
+  'Dívidas': { screen: CostsScreen },
+  'A Receber': { screen: IncomeScreen },
+  'Cartão': { screen: TransactionsScreen }
 }, {
   initialRouteName: 'Resumo',
   initialRouteParams: { name: 'teste param' },
@@ -42,8 +44,9 @@ const Nav = TabNavigator({
       const { routeName } = navigation.state;
       const iconName = () => {
         if (routeName === 'Resumo') return `md-cash`;
-        if (routeName === 'Gastos') return `md-apps`;
-        if (routeName === 'Transações') return `md-card`;
+        if (routeName === 'Dívidas') return `md-apps`;
+        if (routeName === 'A Receber') return `md-apps`;
+        if (routeName === 'Cartão') return `md-card`;
       }
     return <Ionicons name={iconName()} size={25} color={tintColor} />;
     },
@@ -57,11 +60,15 @@ export default class App extends React.Component {
     StatusBar.setBackgroundColor('#000', true);
 
     this.state = {
-      monthlyExpenses: monthlyExpenses
+      monthlyExpenses: monthlyExpenses,
+      monthlyIncomes: monthlyIncomes
     };
 
     this.handleRemoveCost = this.handleRemoveCost.bind(this);
     this.handleAddCost = this.handleAddCost.bind(this);
+
+    this.handleRemoveIncome = this.handleRemoveIncome.bind(this);
+    this.handleAddIncome = this.handleAddIncome.bind(this);
   }
 
   handleRemoveCost(cost, index) {
@@ -79,6 +86,22 @@ export default class App extends React.Component {
     }));
   }
 
+
+  handleRemoveIncome(income, index) {
+    this.setState( prevState => ({
+      monthlyIncomes: prevState.monthlyIncomes.filter((e, i) => { return i !== index })
+    }));
+  }
+
+  handleAddIncome(income) {
+    this.setState( prevState => ({
+      monthlyIncomes: [...prevState.monthlyIncomes, {
+        name: income.name,
+        value: parseFloat(income.value)
+      }]
+    }));
+  }
+
   render() {
     return <Nav screenProps={{
           monthlyIncomes: this.state.monthlyIncomes,
@@ -86,6 +109,10 @@ export default class App extends React.Component {
 
           handleRemoveCost: this.handleRemoveCost,
           handleAddCost: this.handleAddCost,
+
+          handleRemoveIncome: this.handleRemoveIncome,
+          handleAddIncome: this.handleAddIncome,
+
           name: 'Marcos'
         }}
       />;
