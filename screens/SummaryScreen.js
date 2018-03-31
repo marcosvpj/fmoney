@@ -6,12 +6,25 @@ import {
   FlatList
 } from 'react-native';
 import SmsAndroid from 'react-native-get-sms-android';
+import { Card } from '../components/Card';
+import { Header } from '../components/Header';
+import { Screen } from '../components/Screen';
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth() + 1;
 const currentDay = new Date().getDate();
 const creditCardDueDate = 7;
 const budget = 1500;
+
+const monthlyEarnings = 5000;
+const fixedCosts = [
+  {name: 'Aluguel', value: 900},
+  {name: 'Condominio', value: 300},
+  {name: 'Internet', value: 60},
+  {name: 'Luz', value: 40},
+  {name: 'MEI', value: 60},
+  {name: 'Plano de saude', value: 300},
+];
 
 export class SummaryScreen extends React.Component {
   constructor(props) {
@@ -121,51 +134,72 @@ export class SummaryScreen extends React.Component {
         const transactions = sms.map( i => parseMessage(i) ).filter( m => !!m );
         this.setState({sms: sms, transactions: transactions});
 
-        const currentMonthSpending = transactions
-        .filter( t => t.currentBill )
-        .map( t => t.value )
-        .reduce((p, c) => { return p + c}, 0)
-        .toFixed(2);
+        // const currentMonthSpending = transactions
+        // .filter( t => t.currentBill )
+        // .map( t => t.value )
+        // .reduce((p, c) => { return p + c}, 0)
+        // .toFixed(2);
  
-        this.setState({currentMonthSpending: currentMonthSpending});
+        // this.setState({currentMonthSpending: currentMonthSpending});
       }
     );
   }
 
-  render() {
-    const daysLeft = () => {
-      const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-  
-      if (currentDay === creditCardDueDate) return daysInMonth;
-      if (currentDay > creditCardDueDate) return daysInMonth - currentDay + creditCardDueDate;
-      if (currentDay < creditCardDueDate) return creditCardDueDate - currentDay;
-      return 0;
-    };
+  daysLeft () {
+    const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
 
-    const valueAvaliable = (budget - this.state.currentMonthSpending).toFixed(2);
-    const valueAvaliablePerDay = (valueAvaliable / daysLeft()).toFixed(2);
+    if (currentDay === creditCardDueDate) return daysInMonth;
+    if (currentDay > creditCardDueDate) return daysInMonth - currentDay + creditCardDueDate;
+    if (currentDay < creditCardDueDate) return creditCardDueDate - currentDay;
+    return 0;
+  };
+
+  render() {
+    const currentMonthTransactions = this.state.transactions
+    .filter( t => t.currentBill );
+    const sumTransactionsValues = (transactions) => { 
+      return transactions.map( t => t.value )
+      .reduce((p, c) => { return p + c}, 0)
+      .toFixed(2);
+    }
+
+    const currentMonthSpending = sumTransactionsValues(currentMonthTransactions);
+
+    const currentMonthSpendingBy = op => sumTransactionsValues(currentMonthTransactions.filter( t => t.op === op));
+
+    const valueAvaliable = (budget - currentMonthSpending).toFixed(2);
+
+    const valueAvaliablePerDay = (valueAvaliable / this.daysLeft()).toFixed(2);
+
     const daySpending = this.state.transactions
     .filter( t => t.currentBill && t.date.getDate() === currentDay )
     .map( t => t.value )
     .reduce((p, c) => { return p + c}, 0)
     .toFixed(2);
+
     const avaliableToday = (valueAvaliablePerDay - daySpending).toFixed(2);
 
+    // {this.props.navigation}
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={styles.welcome}>
-          Welcome to F-Money!
-        </Text>
+      <Screen>
+        <Header text={'F-Money!'}/>
         <Text style={styles.instructions}>
-          Make all money!!1!
+          Make all the money!!1!
         </Text>
-        { this.state.currentMonthSpending && <Text>Gastos do mês: {this.state.currentMonthSpending}</Text> }
-        <Text>Dias restante para fechamento: {daysLeft()}</Text>
+        { currentMonthSpending && <Text>Gastos do mês: {currentMonthSpending}</Text> }
+        <Text>Dias restante para fechamento: {this.daysLeft()}</Text>
         <Text>Valor disponível: {!!valueAvaliable && valueAvaliable}</Text>
         <Text>Valor disponível por dia: {!!valueAvaliablePerDay && valueAvaliablePerDay}</Text>
         <Text>Valor disponível hoje: {!!valueAvaliablePerDay && avaliableToday}</Text>
         <Text>Gastos do dia: {!!daySpending && daySpending}</Text>
-      </View>
+        
+        <View style={{marginTop: 25, flex:1, flexDirection: 'row', justifyContent: 'space-around'}}>
+          <Card text={'CRÉDITO'} value={currentMonthSpendingBy('credit')} />
+          <Card text={'DÉBITO'} value={currentMonthSpendingBy('debit')} />
+          <Card text={'SAQUES'} value={currentMonthSpendingBy('saque')} />
+        </View>
+        
+      </Screen>
     );
   }
 }
@@ -176,11 +210,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
   },
   instructions: {
     textAlign: 'center',
