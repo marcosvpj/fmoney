@@ -62,7 +62,7 @@ export class TransactionsScreen extends Component<Props> {
       if (place && place[0].indexOf(' valor') !== -1) {
         place = place[0].substring(7, place[0].indexOf(' valor'));
       } else if (place) {
-        place = place[0].substring(7, place[0].length - 3);  
+        place = place[0].substring(7, place[0].length - 3);
       }
 
       return place;
@@ -94,24 +94,24 @@ export class TransactionsScreen extends Component<Props> {
     const parseMessage = (sms) => {
       if (!sms.body) return false;
       if (!sms.body.match(/Compra aprovada no seu ICONTA MULT MC INTER final 9148/g) && !sms.body.match(/ITAU DEBITO:/g)) return false;
-      
+
       const op = getTransactionType(sms.body);
       if (!op) return false;
 
       const dateFrame = (t) => {
         if (currentDay >= creditCardDueDate) {
-          return (t.getMonth() === currentMonth && t.getDate() >= 7) 
+          return (t.getMonth() === currentMonth && t.getDate() >= 7)
         } else {
-          return t.getMonth() === currentMonth || (t.getMonth() === currentMonth-1 && t.getDate() >= 7)  
+          return t.getMonth() === currentMonth || (t.getMonth() === currentMonth-1 && t.getDate() >= 7)
         }
       };
 
       return {
         id: sms._id.toString(),
-        card_number: getCreditCardNumber(sms.body), 
-        value: getTransactionValue(sms.body), 
-        date: getMessageTime(sms), 
-        place: getTransactionPlace(sms.body), 
+        card_number: getCreditCardNumber(sms.body),
+        value: getTransactionValue(sms.body),
+        date: getMessageTime(sms),
+        place: getTransactionPlace(sms.body),
         message: sms.body,
         op: op,
         currentBill: dateFrame(getMessageTime(sms))
@@ -119,8 +119,8 @@ export class TransactionsScreen extends Component<Props> {
     }
 
     SmsAndroid.list(
-      JSON.stringify(smsFilter), 
-      fail => console.log('sms list fail:' + fail), 
+      JSON.stringify(smsFilter),
+      fail => console.log('sms list fail:' + fail),
       (count, smsList) => {
         const sms = JSON.parse(smsList);
         const transactions = sms.map( i => parseMessage(i) ).filter( m => !!m );
@@ -131,16 +131,16 @@ export class TransactionsScreen extends Component<Props> {
         .map( t => t.value )
         .reduce((p, c) => { return p + c}, 0)
         .toFixed(2);
- 
+
         this.setState({currentMonthSpending: currentMonthSpending});
       }
     );
   }
-  
+
   render() {
     const daysLeft = () => {
       const daysInMonth = new Date(currentYear, currentMonth, 0).getDate();
-  
+
       if (currentDay === creditCardDueDate) return daysInMonth;
       if (currentDay > creditCardDueDate) return daysInMonth - currentDay + creditCardDueDate;
       if (currentDay < creditCardDueDate) return creditCardDueDate - currentDay;
