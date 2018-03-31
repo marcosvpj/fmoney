@@ -7,7 +7,6 @@ import { CostsScreen } from './screens/CostsScreen';
 import { TabNavigator, TabBarBottom } from 'react-navigation';
 import Ionicons  from 'react-native-vector-icons/Ionicons';
 
-
 const monthlyEarnings = 5000;
 const fixedCosts = [
   {name: 'Aluguel', value: 900},
@@ -42,7 +41,7 @@ const Nav = TabNavigator({
         if (routeName === 'Gastos') return `md-apps`;
         if (routeName === 'Transações') return `md-card`;
       }
-      return <Ionicons name={iconName()} size={25} color={tintColor} />;
+    return <Ionicons name={iconName()} size={25} color={tintColor} />;
     },
   })
 });
@@ -57,7 +56,7 @@ export default class App extends React.Component {
 
     this.handleRemoveCost = this.handleRemoveCost.bind(this);
     this.handleAddCost = this.handleAddCost.bind(this);
-  } 
+  }
 
   handleRemoveCost(cost, index) {
     this.setState( prevState => ({
@@ -68,12 +67,12 @@ export default class App extends React.Component {
   handleAddCost(cost) {
     this.setState( prevState => ({
       fixedCosts: [...prevState.fixedCosts, {
-        name: cost.name, 
+        name: cost.name,
         value: parseFloat(cost.value)
       }]
     }));
   }
-  
+
   render() {
     return <Nav screenProps={{
       fixedCosts: this.state.fixedCosts,

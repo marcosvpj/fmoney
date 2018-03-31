@@ -8,13 +8,14 @@ import {
   TouchableHighlight
 } from 'react-native';
 import { Button, Input, Card, Screen, Header } from '../components/';
+import { $border, $clear_background } from '../styles/colors.js';
 
 const DOUBLE_PRESS_DELAY = 300;
 
 export class CostsScreen extends React.Component {
   constructor(props) {
     super(props);
-    
+
     this.state = {
       showAddCost: false,
       addCost: {
@@ -54,7 +55,7 @@ export class CostsScreen extends React.Component {
     this.props.screenProps.handleAddCost(this.state.addCost);
     // this.setState( prevState => ({
     //   fixedCosts: [...prevState.fixedCosts, {
-    //     name: this.state.addCost.name, 
+    //     name: this.state.addCost.name,
     //     value: parseFloat(this.state.addCost.value)
     //   }]
     // }));
@@ -71,20 +72,20 @@ export class CostsScreen extends React.Component {
       .toFixed(2);
 
     return (
-      <Screen style={{flex:1, flexDirection: 'column'}}>
+      <Screen style={styles.screen}>
         <Header text={'Gastos do Fixos'} />
 
-        <Modal 
+        <Modal
           transparent={true}
           visible={this.state.showAddCost}
           onRequestClose={() => { this.setState({showAddCost: false}); }}
         >
-          <View style={{backgroundColor: '#FFF', margin: 30, padding: 5, borderRadius: 5}}>
+          <View style={styles.modalBody}>
             <View>
               <View style={styles.section}>
-                <Input 
-                  label={'Nome'} 
-                  value={this.state.addCost.name} 
+                <Input
+                  label={'Nome'}
+                  value={this.state.addCost.name}
                   onChangeText={name => this.setState(
                     prevState => ({addCost: {...prevState.addCost, name: name}})
                   )}
@@ -92,8 +93,8 @@ export class CostsScreen extends React.Component {
               </View>
               <View style={styles.section}>
                 <Input
-                  label={'Valor'} 
-                  value={this.state.addCost.value} 
+                  label={'Valor'}
+                  value={this.state.addCost.value}
                   keyboardType={'numeric'}
                   onChangeText={value => this.setState(
                     prevState => ({addCost: {...prevState.addCost, value: value}})
@@ -114,7 +115,7 @@ export class CostsScreen extends React.Component {
           </View>
         </Modal>
 
-        <ScrollView style={{paddingTop: 5}}>
+        <ScrollView style={styles.spacing}>
         <View>
           <Text>Total: R${total}</Text>
         </View>
@@ -132,19 +133,22 @@ export class CostsScreen extends React.Component {
 
 const styles = StyleSheet.create({
   costsList: {
-    marginTop: 25, 
-    flex:1, 
-    flexDirection: 'row', 
-    justifyContent: 'space-around', 
+    marginTop: 25,
+    flex:1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     flexWrap: 'wrap'
   },
   section: {
     borderBottomWidth: 1,
     padding: 5,
-    backgroundColor: '#fff',
+    backgroundColor: $clear_background,
     justifyContent: 'flex-start',
     flexDirection: 'row',
-    borderColor: '#ddd',
+    borderColor: $border,
     position: 'relative'
-  }
+  },
+  screen: {flex:1, flexDirection: 'column'},
+  modalBody: {backgroundColor: $clear_background, margin: 30, padding: 5, borderRadius: 5},
+  spacing: {paddingTop: 5}
 });

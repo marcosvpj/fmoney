@@ -9,6 +9,7 @@ import SmsAndroid from 'react-native-get-sms-android';
 import { Card, Header, Screen } from '../components';
 
 import { SmsParser } from '../SmsParser';
+import { $grey } from '../styles/colors.js';
 
 const currentYear = new Date().getFullYear();
 const currentMonth = new Date().getMonth() + 1;
@@ -26,9 +27,9 @@ export class SummaryScreen extends React.Component {
       ],
       transactions: []
     };
-    
+
     SmsParser(
-      fail => console.log('sms list fail:' + fail), 
+      fail => console.log('sms list fail:' + fail),
       ({sms, transactions}) => {
         this.setState({sms: sms, transactions: transactions});
       }
@@ -48,7 +49,7 @@ export class SummaryScreen extends React.Component {
     const currentMonthTransactions = this.state.transactions
       .filter( t => t.currentBill );
 
-    const sumTransactionsValues = (transactions) => { 
+    const sumTransactionsValues = (transactions) => {
       return transactions.map( t => t.value )
       .reduce((p, c) => { return p + c}, 0)
       .toFixed(2);
@@ -81,7 +82,7 @@ export class SummaryScreen extends React.Component {
       <Screen>
         <Header text={'F-Money!'}/>
         <Text style={styles.instructions}>
-          Make all the money!!1! 
+          Make all the money!!1!
         </Text>
         { currentMonthSpending && <Text>Gastos do mês: {currentMonthSpending}</Text> }
         <Text>Dias restante para fechamento: {this.daysLeft()}</Text>
@@ -90,34 +91,31 @@ export class SummaryScreen extends React.Component {
         <Text>Valor disponível hoje: {!!valueAvaliablePerDay && avaliableToday}</Text>
         <Text>Gastos do dia: {!!daySpending && daySpending}</Text>
 
-        <View style={{marginTop: 25, flex:1, flexDirection: 'row', justifyContent: 'space-around'}}>
+        <View style={styles.spacer}>
           <Card text={'CUSTOS FIXOS'} value={totalCosts} />
           <Card text={'SAQUES'} value={currentMonthSpendingBy('saque')} />
         </View>
-        
-        <View style={{marginTop: 25, flex:1, flexDirection: 'row', justifyContent: 'space-around'}}>
+
+        <View style={styles.spacer}>
           <Card text={'CRÉDITO'} value={currentMonthSpendingBy('credit')} />
           <Card text={'DÉBITO'} value={currentMonthSpendingBy('debit')} />
         </View>
-        
+
       </Screen>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
   instructions: {
     textAlign: 'center',
-    color: '#333333',
+    color: $grey,
     marginBottom: 5,
   },
-  transactions: {
-    paddingTop: 15
+  spacer: {
+    marginTop: 25,
+    flex:1,
+    flexDirection: 'row',
+    justifyContent: 'space-around'
   }
 });
