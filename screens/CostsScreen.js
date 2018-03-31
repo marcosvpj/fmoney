@@ -39,8 +39,8 @@ export class CostsScreen extends React.Component {
   handleCardDoublePress(cost, index) {
     this.props.screenProps.handleRemoveCost(cost, index);
     // this.setState( prevState => ({
-    //   fixedCosts: prevState.fixedCosts.filter((e, i) => { return i !== index })
-    //   // fixedCosts: prevState.fixedCosts.filter((e, i) => { return e.name !== cost.name })
+    //   monthlyExpenses: prevState.monthlyExpenses.filter((e, i) => { return i !== index })
+    //   // monthlyExpenses: prevState.monthlyExpenses.filter((e, i) => { return e.name !== cost.name })
     // }));
   }
 
@@ -54,7 +54,7 @@ export class CostsScreen extends React.Component {
 
     this.props.screenProps.handleAddCost(this.state.addCost);
     // this.setState( prevState => ({
-    //   fixedCosts: [...prevState.fixedCosts, {
+    //   monthlyExpenses: [...prevState.monthlyExpenses, {
     //     name: this.state.addCost.name,
     //     value: parseFloat(this.state.addCost.value)
     //   }]
@@ -66,7 +66,7 @@ export class CostsScreen extends React.Component {
   }
 
   render() {
-    const total = this.props.screenProps.fixedCosts
+    const total = this.props.screenProps.monthlyExpenses
       .map(c => c.value)
       .reduce((p, c) => { return p + c }, 0)
       .toFixed(2);
@@ -116,15 +116,12 @@ export class CostsScreen extends React.Component {
         </Modal>
 
         <ScrollView style={styles.spacing}>
-        <View>
-          <Text>Total: R${total}</Text>
-        </View>
-        <View style={styles.costsList}>
-          {this.props.screenProps.fixedCosts.map((c, i) => (
-            <Card key={i} text={c.name} value={c.value} onPress={() => this.onPressCostCard(c, i) } />
-          ))}
-          <Card key={'add'} text={'Adicionar'} value={'+'} onPress={() => this.onPressAddCost() } />
-        </View>
+          <View style={styles.costsList}>
+            {this.props.screenProps.monthlyExpenses.map((c, i) => (
+              <Card key={i} text={c.name} value={c.value} onPress={() => this.onPressCostCard(c, i) } />
+            ))}
+            <Card text={'Adicionar'} value={'+'} onPress={() => this.onPressAddCost() } />
+          </View>
         </ScrollView>
       </Screen>
     );

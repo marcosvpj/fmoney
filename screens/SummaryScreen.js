@@ -55,12 +55,12 @@ export class SummaryScreen extends React.Component {
       .toFixed(2);
     }
 
-    const currentMonthSpending = sumTransactionsValues(currentMonthTransactions);
-
     const currentMonthSpendingBy = op => sumTransactionsValues(currentMonthTransactions.filter( t => t.op === op));
+    const currentMonthCreditCard = currentMonthSpendingBy('credit');
+    // const currentMonthSpending = sumTransactionsValues(currentMonthTransactions);
+    const currentMonthSpending = currentMonthCreditCard;
 
     const valueAvaliable = (budget - currentMonthSpending).toFixed(2);
-
     const valueAvaliablePerDay = (valueAvaliable / this.daysLeft()).toFixed(2);
 
     const daySpending = this.state.transactions
@@ -71,10 +71,13 @@ export class SummaryScreen extends React.Component {
 
     const avaliableToday = (valueAvaliablePerDay - daySpending).toFixed(2);
 
-    const totalCosts = this.props.screenProps.fixedCosts
+    const totalCosts = this.props.screenProps.monthlyExpenses
       .map(c => c.value)
       .reduce((p, c) => { return p + c }, 0)
       .toFixed(2);
+
+    const income = 5000;
+    const expense = (parseFloat(currentMonthSpendingBy('credit')) + parseFloat(totalCosts)).toFixed(2);
 
     // {this.props.navigation}
     // {this.props.screenProps.name}

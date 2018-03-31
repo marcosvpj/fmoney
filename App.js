@@ -8,14 +8,17 @@ import { TabNavigator, TabBarBottom } from 'react-navigation';
 import { StatusBar } from 'react-native';
 import Ionicons  from 'react-native-vector-icons/Ionicons';
 
-const monthlyEarnings = 5000;
-const fixedCosts = [
+const monthlyIncomes = [
+  {name: 'Salário dz', value: 5000}
+];
+const monthlyExpenses = [
   {name: 'Aluguel', value: 900},
   {name: 'Condominio', value: 300},
   {name: 'Internet', value: 60},
   {name: 'Luz', value: 40},
   {name: 'MEI', value: 60},
   {name: 'Plano de saude', value: 300},
+  {name: 'Hospital', value: 1100},
 ];
 
 const Nav = TabNavigator({
@@ -54,7 +57,7 @@ export default class App extends React.Component {
     StatusBar.setBackgroundColor('#000', true);
 
     this.state = {
-      fixedCosts: fixedCosts
+      monthlyExpenses: monthlyExpenses
     };
 
     this.handleRemoveCost = this.handleRemoveCost.bind(this);
@@ -63,13 +66,13 @@ export default class App extends React.Component {
 
   handleRemoveCost(cost, index) {
     this.setState( prevState => ({
-      fixedCosts: prevState.fixedCosts.filter((e, i) => { return i !== index })
+      monthlyExpenses: prevState.monthlyExpenses.filter((e, i) => { return i !== index })
     }));
   }
 
   handleAddCost(cost) {
     this.setState( prevState => ({
-      fixedCosts: [...prevState.fixedCosts, {
+      monthlyExpenses: [...prevState.monthlyExpenses, {
         name: cost.name,
         value: parseFloat(cost.value)
       }]
@@ -78,10 +81,14 @@ export default class App extends React.Component {
 
   render() {
     return <Nav screenProps={{
-      fixedCosts: this.state.fixedCosts,
-      handleRemoveCost: this.handleRemoveCost,
-      handleAddCost: this.handleAddCost,
-      name: 'Marcos'
-    }} handleRemoveCost={this.handleRemoveCost} />
+          monthlyIncomes: this.state.monthlyIncomes,
+          monthlyExpenses: this.state.monthlyExpenses,
+
+          handleRemoveCost: this.handleRemoveCost,
+          handleAddCost: this.handleAddCost,
+          name: 'Marcos'
+        }}
+      />;
+
   }
 };
