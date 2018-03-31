@@ -105,16 +105,10 @@ const SmsParser = function (onFail, onSuccess) {
     (count, smsList) => {
       const sms = JSON.parse(smsList);
       const transactions = sms.map( i => parseMessage(i) ).filter( m => !!m );
-      // this.setState({sms: sms, transactions: transactions});
 
       onSuccess({sms: sms, transactions: transactions});
     }
   );
 }
-
-
-// (({success: undefined, fail: undefined})) => {
-//   return {}
-// };
 
 export { SmsParser };

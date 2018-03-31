@@ -1,9 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */ 
-
 import React, { Component } from 'react';
 
 import { TransactionsScreen } from './screens/TransactionsScreen';
@@ -23,7 +17,6 @@ export default TabNavigator({
   tabBarPosition: 'bottom',
   tabBarComponent: TabBarBottom,
   tabBarOptions: {
-    // inactiveTintColor: 'gray',
     style: {
       elevation: .3,
       backgroundColor: '#fff',
@@ -32,18 +25,13 @@ export default TabNavigator({
   },
   navigationOptions: ({ navigation }) => ({
     tabBarIcon: ({ focused, tintColor }) => {
-      // return <Ionicons name={'ios-card'} size={25} color={tintColor} />;
       const { routeName } = navigation.state;
-      let iconName;
-      if (routeName === 'Resumo') {
-        iconName = `md-cash`;
-      } else if (routeName === 'Gastos') {
-        iconName = `md-apps`;
-      } else if (routeName === 'Transações') {
-        iconName = `md-card`;
+      const iconName = () => {
+        if (routeName === 'Resumo') return `md-cash`;
+        if (routeName === 'Gastos') return `md-apps`;
+        if (routeName === 'Transações') return `md-card`;
       }
-
-      return <Ionicons name={iconName} size={25} color={tintColor} />;
+      return <Ionicons name={iconName()} size={25} color={tintColor} />;
     },
   })
 });
