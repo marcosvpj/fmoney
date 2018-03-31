@@ -16,16 +16,6 @@ const currentDay = new Date().getDate();
 const creditCardDueDate = 7;
 const budget = 1500;
 
-const monthlyEarnings = 5000;
-const fixedCosts = [
-  {name: 'Aluguel', value: 900},
-  {name: 'Condominio', value: 300},
-  {name: 'Internet', value: 60},
-  {name: 'Luz', value: 40},
-  {name: 'MEI', value: 60},
-  {name: 'Plano de saude', value: 300},
-];
-
 export class SummaryScreen extends React.Component {
   constructor(props) {
     super(props);
