@@ -72,21 +72,26 @@ export class SummaryScreen extends React.Component {
 
     const avaliableToday = (valueAvaliablePerDay - daySpending).toFixed(2);
 
-    const totalCosts = this.props.screenProps.monthlyExpenses
+    const totalExpense = this.props.screenProps.monthlyExpenses
       .map(c => c.value)
       .reduce((p, c) => { return p + c }, 0)
       .toFixed(2);
 
-    const income = 5000;
-    const expense = (parseFloat(currentMonthSpendingBy('credit')) + parseFloat(totalCosts)).toFixed(2);
+    const totalIncome = this.props.screenProps.monthlyIncomes
+      .map(c => c.value)
+      .reduce((p, c) => { return p + c }, 0)
+      .toFixed(2);
 
+    const income = totalIncome;
+    const expense = (parseFloat(currentMonthSpendingBy('credit')) + parseFloat(totalExpense)).toFixed(2);
+    const avaliable = (parseFloat(income) - parseFloat(expense)).toFixed(2);
     // {this.props.navigation}
     // {this.props.screenProps.name}
     return (
       <Screen>
         <Header text={'F-Money!'}/>
         <ScrollView style={styles.screen}>
-          <Text style={styles.instructions}>
+          {/* <Text style={styles.instructions}>
             Make all the money!!1!
           </Text>
           { currentMonthSpending && <Text>Gastos do mês: {currentMonthSpending}</Text> }
@@ -94,28 +99,29 @@ export class SummaryScreen extends React.Component {
           <Text>Valor disponível: {!!valueAvaliable && valueAvaliable}</Text>
           <Text>Valor disponível por dia: {!!valueAvaliablePerDay && valueAvaliablePerDay}</Text>
           <Text>Valor disponível hoje: {!!valueAvaliablePerDay && avaliableToday}</Text>
-          <Text>Gastos do dia: {!!daySpending && daySpending}</Text>
+          <Text>Gastos do dia: {!!daySpending && daySpending}</Text> */}
 
           <View style={styles.spacer}>
             <View style={[styles.card, styles.income]}>
               <Text style={styles.cardValue}>{'R$ ' + income}</Text>
-              <Text style={styles.cardText}>{'ENTRADA'}</Text>
+              <Text style={[styles.cardText, {color: $income}]}>{'A RECEBER'}</Text>
             </View>
 
             <View style={[styles.card, styles.expense]}>
               <Text style={styles.cardValue}>{'R$ ' + expense}</Text>
-              <Text style={styles.cardText}>{'SAIDA'}</Text>
+              <Text style={[styles.cardText, {color: $expense}]}>{'DÍVIDAS'}</Text>
             </View>
           </View>
 
           <View style={styles.spacer}>
-            <Card text={'CUSTOS FIXOS'} value={totalCosts} />
+            <Card text={'SALDO\nFUTURO'} value={avaliable} />
+            <Card text={'CUSTOS\nFIXOS'} value={totalExpense} />
             <Card text={'SAQUES'} value={currentMonthSpendingBy('saque')} />
           {/* </View>
 
           <View style={styles.spacer}> */}
-            <Card text={'CRÉDITO'} value={currentMonthSpendingBy('credit')} />
-            <Card text={'DÉBITO'} value={currentMonthSpendingBy('debit')} />
+            <Card text={'CARTÃO\nCRÉDITO'} value={currentMonthSpendingBy('credit')} />
+            <Card text={'CARTÃO\nDÉBITO'} value={currentMonthSpendingBy('debit')} />
           </View>
         </ScrollView>
       </Screen>
@@ -127,11 +133,11 @@ const styles = StyleSheet.create({
   screen: {
     width: '100%'
   },
-  instructions: {
-    textAlign: 'center',
-    color: $grey,
-    marginBottom: 5,
-  },
+  // instructions: {
+  //   textAlign: 'center',
+  //   color: $grey,
+  //   marginBottom: 5,
+  // },
   spacer: {
     flex:1,
     flexDirection: 'row',

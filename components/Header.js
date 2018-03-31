@@ -25,12 +25,13 @@ const styles = StyleSheet.create({
     height: 120,
   },
   text: {
-    fontFamily: 'Roboto',
+    fontFamily: 'monospace',
     fontSize: 35,
     textAlign: 'center',
     marginTop: 20,
     color: '#FFF',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    opacity: .9
   },
 });
 

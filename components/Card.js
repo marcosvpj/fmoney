@@ -45,7 +45,9 @@ const styles = StyleSheet.create({
   cardText: {
     color: $brigther_text,
     fontSize: 10,
-    marginTop: 3
+    marginTop: 3,
+    textAlign: 'center',
+    lineHeight: 17
   },
   center: {
     alignItems: 'center',
