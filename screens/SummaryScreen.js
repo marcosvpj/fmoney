@@ -19,6 +19,7 @@ const budget = 1500;
 export class SummaryScreen extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       sms:[
         {_id: 1, body:'nada'}
@@ -45,7 +46,8 @@ export class SummaryScreen extends React.Component {
 
   render() {
     const currentMonthTransactions = this.state.transactions
-    .filter( t => t.currentBill );
+      .filter( t => t.currentBill );
+
     const sumTransactionsValues = (transactions) => { 
       return transactions.map( t => t.value )
       .reduce((p, c) => { return p + c}, 0)
@@ -61,19 +63,25 @@ export class SummaryScreen extends React.Component {
     const valueAvaliablePerDay = (valueAvaliable / this.daysLeft()).toFixed(2);
 
     const daySpending = this.state.transactions
-    .filter( t => t.currentBill && t.date.getDate() === currentDay )
-    .map( t => t.value )
-    .reduce((p, c) => { return p + c}, 0)
-    .toFixed(2);
+      .filter( t => t.currentBill && t.date.getDate() === currentDay )
+      .map( t => t.value )
+      .reduce((p, c) => { return p + c}, 0)
+      .toFixed(2);
 
     const avaliableToday = (valueAvaliablePerDay - daySpending).toFixed(2);
 
+    const totalCosts = this.props.screenProps.fixedCosts
+      .map(c => c.value)
+      .reduce((p, c) => { return p + c }, 0)
+      .toFixed(2);
+
     // {this.props.navigation}
+    // {this.props.screenProps.name}
     return (
       <Screen>
         <Header text={'F-Money!'}/>
         <Text style={styles.instructions}>
-          Make all the money!!1!
+          Make all the money!!1! 
         </Text>
         { currentMonthSpending && <Text>Gastos do mês: {currentMonthSpending}</Text> }
         <Text>Dias restante para fechamento: {this.daysLeft()}</Text>
@@ -81,11 +89,15 @@ export class SummaryScreen extends React.Component {
         <Text>Valor disponível por dia: {!!valueAvaliablePerDay && valueAvaliablePerDay}</Text>
         <Text>Valor disponível hoje: {!!valueAvaliablePerDay && avaliableToday}</Text>
         <Text>Gastos do dia: {!!daySpending && daySpending}</Text>
+
+        <View style={{marginTop: 25, flex:1, flexDirection: 'row', justifyContent: 'space-around'}}>
+          <Card text={'CUSTOS FIXOS'} value={totalCosts} />
+          <Card text={'SAQUES'} value={currentMonthSpendingBy('saque')} />
+        </View>
         
         <View style={{marginTop: 25, flex:1, flexDirection: 'row', justifyContent: 'space-around'}}>
           <Card text={'CRÉDITO'} value={currentMonthSpendingBy('credit')} />
           <Card text={'DÉBITO'} value={currentMonthSpendingBy('debit')} />
-          <Card text={'SAQUES'} value={currentMonthSpendingBy('saque')} />
         </View>
         
       </Screen>

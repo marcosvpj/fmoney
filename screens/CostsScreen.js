@@ -9,23 +9,13 @@ import {
 } from 'react-native';
 import { Button, Input, Card, Screen, Header } from '../components/';
 
-const monthlyEarnings = 5000;
-const fixedCosts = [
-  {name: 'Aluguel', value: 900},
-  {name: 'Condominio', value: 300},
-  {name: 'Internet', value: 60},
-  {name: 'Luz', value: 40},
-  {name: 'MEI', value: 60},
-  {name: 'Plano de saude', value: 300},
-];
-
 const DOUBLE_PRESS_DELAY = 300;
 
 export class CostsScreen extends React.Component {
   constructor(props) {
     super(props);
+    
     this.state = {
-      fixedCosts: fixedCosts,
       showAddCost: false,
       addCost: {
         name: '',
@@ -46,10 +36,11 @@ export class CostsScreen extends React.Component {
   }
 
   handleCardDoublePress(cost, index) {
-    this.setState( prevState => ({
-      fixedCosts: prevState.fixedCosts.filter((e, i) => { return i !== index })
-      // fixedCosts: prevState.fixedCosts.filter((e, i) => { return e.name !== cost.name })
-    }));
+    this.props.screenProps.handleRemoveCost(cost, index);
+    // this.setState( prevState => ({
+    //   fixedCosts: prevState.fixedCosts.filter((e, i) => { return i !== index })
+    //   // fixedCosts: prevState.fixedCosts.filter((e, i) => { return e.name !== cost.name })
+    // }));
   }
 
   onPressAddCost() {
@@ -59,12 +50,14 @@ export class CostsScreen extends React.Component {
 
   addCost() {
     this.setState({showAddCost: false});
-    this.setState( prevState => ({
-      fixedCosts: [...prevState.fixedCosts, {
-        name: this.state.addCost.name, 
-        value: parseFloat(this.state.addCost.value)
-      }]
-    }));
+
+    this.props.screenProps.handleAddCost(this.state.addCost);
+    // this.setState( prevState => ({
+    //   fixedCosts: [...prevState.fixedCosts, {
+    //     name: this.state.addCost.name, 
+    //     value: parseFloat(this.state.addCost.value)
+    //   }]
+    // }));
   }
 
   showModalAddCosts(show) {
@@ -72,7 +65,7 @@ export class CostsScreen extends React.Component {
   }
 
   render() {
-    const total = this.state.fixedCosts
+    const total = this.props.screenProps.fixedCosts
       .map(c => c.value)
       .reduce((p, c) => { return p + c }, 0)
       .toFixed(2);
@@ -126,7 +119,7 @@ export class CostsScreen extends React.Component {
           <Text>Total: R${total}</Text>
         </View>
         <View style={styles.costsList}>
-          {this.state.fixedCosts.map((c, i) => (
+          {this.props.screenProps.fixedCosts.map((c, i) => (
             <Card key={i} text={c.name} value={c.value} onPress={() => this.onPressCostCard(c, i) } />
           ))}
           <Card key={'add'} text={'Adicionar'} value={'+'} onPress={() => this.onPressAddCost() } />
