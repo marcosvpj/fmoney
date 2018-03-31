@@ -12,7 +12,7 @@ import { Transactions } from '../components/Transactions';
 type Props = {};
 
 const currentYear = new Date().getFullYear();
-const currentMonth = new Date().getMonth() + 1;
+const currentMonth = new Date().getMonth();
 const currentDay = new Date().getDate();
 const creditCardDueDate = 7;
 const budget = 1500;
@@ -38,9 +38,10 @@ export class TransactionsScreen extends Component<Props> {
     };
 
     const getMessageTime = (sms) => {
-      const date = sms.body.match(/(\d\d\/\d\d)/g).toString();
-      const d = new Date(sms.date);
-      return new Date(d.getFullYear(), date.substring(3,5), date.substring(0,2));
+      return new Date(sms.date_sent);
+      // const date = sms.body.match(/(\d\d\/\d\d)/g).toString();
+      // const d = new Date(sms.date);
+      // return new Date(d.getFullYear(), date.substring(3,5), date.substring(0,2));
     };
 
     const getTransactionValue = (msg) => {
