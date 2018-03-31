@@ -5,6 +5,7 @@ import { SummaryScreen } from './screens/SummaryScreen';
 import { CostsScreen } from './screens/CostsScreen';
 
 import { TabNavigator, TabBarBottom } from 'react-navigation';
+import { StatusBar } from 'react-native';
 import Ionicons  from 'react-native-vector-icons/Ionicons';
 
 const monthlyEarnings = 5000;
@@ -49,6 +50,8 @@ const Nav = TabNavigator({
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+
+    StatusBar.setBackgroundColor('#000', true);
 
     this.state = {
       fixedCosts: fixedCosts
